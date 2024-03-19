@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  app:
+    image: "cosmtrek/air"
+    working_dir: /opt/app/api
+    ports:
+      - 8000:8000
+    command: air -c .air.toml
+    env_file: .env
+    volumes:
+      - .:/opt/app/api
+    depends_on:
+      - db
+    networks:
+      - api
+
+  db:
+    image: postgres:16-bullseye
+    ports:
+      - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - api
+
+volumes:
+  db_data:
+
+networks:
+  api:
+    driver: bridge
