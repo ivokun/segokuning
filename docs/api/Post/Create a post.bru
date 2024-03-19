@@ -1,0 +1,39 @@
+meta {
+  name: Create a post
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://0.0.0.0:8000
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "postInHtml": "", // not null, minLength 2, maxLength 500, no need to validate this for HTML
+    "tags": [""] // not null
+  }
+}
+
+docs {
+  `POST /v1/post`
+  - Request
+      
+      ```jsx
+      {
+      	"postInHtml": "", // not null, minLength 2, maxLength 500, no need to validate this for HTML
+      	"tags": [""] // not null
+      }
+      ```
+      
+  - Response
+    - `200` successfully add post
+    - `400` request doesn’t pass validation
+    - `401` request token is missing or expired
+}

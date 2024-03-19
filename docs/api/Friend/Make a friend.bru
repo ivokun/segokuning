@@ -1,0 +1,44 @@
+meta {
+  name: Make a friend
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/friend
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+      {
+        "userId": ""
+      }
+  
+}
+
+docs {
+  POST /v1/friend
+    
+    💡 Jika user A menambahkan user B sebagai teman, maka user B juga otomatis menjadi teman user A
+    
+    
+    - Request
+    
+    ```jsx
+    {
+    	"userId": "" // not null, should be a valid user id
+    }
+    ```
+    
+    - Response
+        - `200` successfully add friend
+        - `400` request doesn’t pass validation
+        - `400` userId is already user’s friend or adding self as friend
+        - `401` request token is missing or expired
+        - `404` userId is not found
+}

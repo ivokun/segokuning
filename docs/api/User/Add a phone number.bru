@@ -1,0 +1,43 @@
+meta {
+  name: Add a phone number
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/user/link/phone
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "phone": "+612312131323"
+    // 👆 phone number should start with "international calling code" (including the "+" prefix)
+    // with minLength=7 and maxLength=13 (including the "international calling code")
+  }
+}
+
+docs {
+  `POST /v1/user/link/phone`
+    - Request
+      
+      ```jsx
+      {
+      	"phone": "+612312131323"
+      	// 👆 phone number should start with "international calling code" (including the "+" prefix)
+      	// with minLength=7 and maxLength=13 (including the "international calling code")
+      }
+      ```
+      
+    - Response
+      - `200` successfully link their email to phone number
+      - `400` if user already have a phone number but they use this route to change their phone number
+      - `400` request doesn’t pass validation
+      - `401` request token is missing or expired
+      - `409` if phone number already existed
+}

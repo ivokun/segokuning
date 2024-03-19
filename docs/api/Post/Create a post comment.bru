@@ -1,0 +1,41 @@
+meta {
+  name: Create a post comment
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/post/comment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "postId": "", // not null, should be a valid post id
+    "comment": "" // not null, minLength 2, maxLength 500
+  }
+}
+
+docs {
+  `POST /v1/post/comment`
+  - Request
+      
+      ```jsx
+      {
+      	"postId": "", // not null, should be a valid post id
+      	"comment": "" // not null, minLength 2, maxLength 500
+      }
+      ```
+      
+  - Response
+    - `200` successfully add post
+    - `400` request doesn’t pass validation
+    - `400` postId is not the user’s friend
+    - `401` request token is missing or expired
+    - `404` postId is not found
+}

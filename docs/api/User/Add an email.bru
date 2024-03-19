@@ -1,0 +1,41 @@
+meta {
+  name: Add an email
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/user/link/phone
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "email": "nanda@nanda.com"
+    // 👆 should be in email format
+  }
+}
+
+docs {
+  `POST /v1/user/link/email`
+    - Request
+      
+      ```jsx
+      {
+      	"email": "nanda@nanda.com"
+      	// 👆 should be in email format
+      }
+      ```
+      
+    - Response
+      - `200` successfully link their phone number to email
+      - `409` if email already existed
+      - `400` if user already have a email but they use this route to change their email
+      - `400` request doesn’t pass validation
+      - `401` request token is missing or expired
+}

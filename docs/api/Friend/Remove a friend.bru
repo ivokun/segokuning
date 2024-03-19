@@ -1,0 +1,40 @@
+meta {
+  name: Remove a friend
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://0.0.0.0:8000/v1/friend
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+      {
+        "userId": ""
+      }
+  
+}
+
+docs {
+  DELETE /v1/friend
+    - Request
+    
+    ```jsx
+    {
+    	"userId": "" // not null, should be a valid user id
+    }
+    ```
+    
+    - Response
+        - `200` successfully delete friend
+        - `400` request doesn’t pass validation
+        - `400` userId is not the user’s friend
+        - `401` request token is missing or expired
+        - `404` userId is not found
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Update user data
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://0.0.0.0:8000/v1/user
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "imageUrl": "http://image.jpg", // not null, should in url format
+    "name": "namadepan namabelakang" // not null, minLength 5, maxLength 50
+  }
+}
+
+docs {
+  `PATCH /v1/user`
+  - Request
+      
+      ```jsx
+      {
+      	"imageUrl": "http://image.jpg" // not null, should in url format
+      	"name": "namadepan namabelakang", // not null, minLength 5, maxLength 50
+      }
+      ```
+      
+  - Response
+      - `200` successfully update user profile
+      - `400` request doesn’t pass validation
+      - `401` request token is missing or expired
+}

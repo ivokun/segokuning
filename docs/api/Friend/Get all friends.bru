@@ -1,0 +1,51 @@
+meta {
+  name: Get all friends
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://0.0.0.0:8000/v1/friend
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  GET /v1/friend
+  - Request
+    - Param (all optional)
+      - limit & offset (number) default limit=5&offset=0
+      - display how much data in single request
+      - sortBy (”friendCount”|”createdAt”) default createdAt
+      - display the information based on defined value
+      - orderBy (”asc”|”desc”) default desc
+      - onlyFriend (true|false) default false, show only the user’s friend
+      - search (string)
+      - display information that contains the name of search
+  - Response
+  200 successfully get list of friends
+  
+  ```json
+  {
+  	"message": "",
+  	"data": [ // ordered by user's createdAt desc
+  		{
+  			"userId": "", // you can use any of ID generators
+  			"name":"",
+  			"imageUrl":"",
+  			"friendCount": 1, // all the friend that this user have
+  			"createdAt":"" // should in ISO 8601 format
+  		}
+  	],
+  	"meta": {
+  		"limit": 10,
+  		"offset": 0,
+  		"total": 100 
+  	}
+  }
+  ```
+}
