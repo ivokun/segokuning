@@ -1,0 +1,59 @@
+meta {
+  name: User login
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/user/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "credentialType": "phone | email", // not null, should in enum
+    "credentialValue": "+621.... | nanda@nanda.com", // not null
+    // 👆 if credentialType == email, value should be in email format, 
+    // otherwise, phone number should start with "international calling code" 
+    // with minLength=7 and maxLength=13 (including the "international calling code")
+    "password": "" // not null, minLength 5, maxLength 15
+  }
+}
+
+docs {
+  `POST /v1/user/login`
+    - Request
+      
+      ```jsx
+      {
+      	"credentialType": "phone | email", // not null, should in enum
+      	"credentialValue": "+621.... | nanda@nanda.com", // not null
+      	// 👆 if credentialType == email, value should be in email format, 
+      	// otherwise, phone number should start with "international calling code" 
+      	// with minLength=7 and maxLength=13 (including the "international calling code")
+      	"password": "" // not null, minLength 5, maxLength 15
+      }
+      ```
+      
+  - Response
+    - `200` User successfully logged
+          
+          ```jsx
+          {
+              "message": "User registered successfully"
+              "data": {
+          			"email": "email@email.com", // gives empty string if user registers via phone number or don't link their phone number yet
+          			"phone": "+611123232323", // gives empty string if user registers via email number or don't link their email yet
+          			"name": "namadepan namabelakang", 
+                "accessToken": "qwertyuiopasdfghjklzxcvbnm" // token should have 8 hours until expiration
+              }
+          }
+          ```
+          
+  - Error
+    - `404` if user not found
+    - `400` if password is wrong
+    - `400` request doesn’t pass validation
+    - `500` if server error
+}

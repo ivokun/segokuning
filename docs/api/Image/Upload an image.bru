@@ -1,0 +1,46 @@
+meta {
+  name: Upload an image
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/image
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  `POST /v1/image`
+  - Request
+      - Header
+          
+          | Key | Value |
+          | --- | --- |
+          | Content-Type | multipart/form-data |
+      - Body
+          
+          | Key | Value | Validation |
+          | --- | --- | --- |
+          | file | UPLOADED_FILE.jpeg | Must in *.jpg | *.jpeg format, no more than 2MB, no less than 10KB |
+  - Response
+      - `200` image uploaded successfully
+          
+          ```jsx
+          {
+          	"message":"File uploaded sucessfully",
+          	"data" : {
+          		"imageUrl":"https://awss3.d87801e9-fcfc-42a8-963b-fe86d895b51a.jpeg" // file name should be uuid
+          	}
+          }
+          ```
+          
+  - Errors
+      - `400` image is wrong (not *.jpg | *.jpeg, more than 2MB or less than 10KB)
+      - `401` request token is missing or expired
+      - `500` if processing fails
+}

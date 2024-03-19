@@ -1,0 +1,64 @@
+meta {
+  name: Get all posts
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://0.0.0.0:8000/v1/post
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  `GET /v1/post`
+  - GET /v1/post
+      - Request
+          - Param (all optional)
+              - `limit` & `offset` (number) default `limit=5&offset=0`
+                  - display how much data in single request
+              - `search` (string)
+                  - display post that contains the name of search
+              - `searchTag` ([]string) (ex: `searchTag=a&searchTag=b`)
+                  - search by tags
+      - Response
+          - 200 successfully get posts
+  ```json
+  {
+  	"message": "",
+  	"data": [ // ordered by post createdAt
+  		{
+  			"postId": "",
+  			"post": {
+  				"postInHtml": "", 
+  				"tags": [""]
+  				"createdAt": // should in ISO 8601 format
+  			},
+  			"comments": [ // ordered by comment's createdAt
+  				{
+  					"comment": "",
+  					"creator": {
+  						"userId": "",
+  						"name":"",
+  						"imageUrl":"",
+  						"friendCount": 1,
+  						"createdAt":"" // should in ISO 8601 format
+  					}
+  				}
+  			],
+  			"creator": {
+  				"userId": "",
+  				"name":"",
+  				"imageUrl":"",
+  				"friendCount": 1,
+  				"createdAt":"" // should in ISO 8601 format
+  			}
+  		}
+  	]
+  }
+  ```
+}

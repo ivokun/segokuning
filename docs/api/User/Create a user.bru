@@ -1,0 +1,73 @@
+meta {
+  name: Create a user
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://0.0.0.0:8000/v1/user/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "credentialType": "phone | email", // not null, should in enum
+    "credentialValue": "+621.... | n@n.co", // not null
+    // 👆 if credentialType == email, value should be in email format, 
+    // otherwise, phone number should start with "international calling code" (including the "+" prefix)
+    // with minLength=7 and maxLength=13 (including the "international calling code" with the "+" and only
+    // applicable with credentialType == phone)
+    "name": "namadepan namabelakang", // not null, minLength 5, maxLength 50, name can be duplicate with others
+    "password": "" // not null, minLength 5, maxLength 15
+  }
+}
+
+docs {
+  `POST /v1/user/register`
+  - Request
+          
+          ```jsx
+          {
+          	"credentialType": "phone | email", // not null, should in enum
+          	"credentialValue": "+621.... | n@n.co", // not null
+          	// 👆 if credentialType == email, value should be in email format, 
+          	// otherwise, phone number should start with "international calling code" (including the "+" prefix)
+          	// with minLength=7 and maxLength=13 (including the "international calling code" with the "+" and only
+          	// applicable with credentialType == phone)
+          	"name": "namadepan namabelakang", // not null, minLength 5, maxLength 50, name can be duplicate with others
+          	"password": "" // not null, minLength 5, maxLength 15
+          }
+          ```
+          
+  - Response
+    - `201` User successfully registered
+          
+          ```jsx
+          {
+              "message": "User registered successfully"
+              "data": {
+          			"email": "email@email.com", 
+          			"name": "namadepan namabelakang", 
+                "accessToken": "qwertyuiopasdfghjklzxcvbnm" // token should have 8 hours until expiration
+              }
+          }
+          
+          ```
+          
+          ```json
+          {
+              "message": "User registered successfully"
+              "data": {
+          			"phone": "+611123232323", 
+          			"name": "namadepan namabelakang", 
+                "accessToken": "qwertyuiopasdfghjklzxcvbnm" // token should have 8 hours until expiration
+              }
+          }
+          ```
+          
+  - Errors:
+    - `409` conflict if email / phone number exists
+    - `400` request doesn’t pass validation
+    - `500` if server error
+}
