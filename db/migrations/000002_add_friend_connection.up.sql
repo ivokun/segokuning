@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS friends(
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   friend_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
-  modified_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
+  modified_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW()))
 );
 
 -- Trigger to update modified_at column

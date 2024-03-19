@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users(
   image_url TEXT NOT NULL,
   password VARCHAR (255) NOT NULL,
   created_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
-  modified_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
+  modified_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW()))
 );
 
 -- Trigger to update modified_at column
