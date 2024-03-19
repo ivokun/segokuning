@@ -21,3 +21,7 @@
 go.work
 
 .env
+
+# Output of built files
+dist
+tmp
