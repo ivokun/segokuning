@@ -12,4 +12,3 @@ CREATE TABLE IF NOT EXISTS post_tags(
 );
 
 CREATE INDEX post_tags_post_id_index ON post_tags USING GIN (post_id);
-```

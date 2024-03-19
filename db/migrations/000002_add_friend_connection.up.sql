@@ -1,11 +1,9 @@
 CREATE TABLE IF NOT EXISTS friends(
   id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  friend_id TEXT NOT NULL,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  friend_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
   modified_at TIMESTAMP DEFAULT (TIMEZONE('UTC', NOW())),
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (friend_id) REFERENCES users(id)
 );
 
 -- Trigger to update modified_at column
