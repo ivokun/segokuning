@@ -1,0 +1,3 @@
+[build]
+poll = true
+poll_interval = 500    # ms
