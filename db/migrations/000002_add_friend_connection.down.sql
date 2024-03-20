@@ -1,5 +1,5 @@
+DROP TRIGGER IF EXISTS add_friend_connection_trigger ON friends;
+
+DROP FUNCTION IF EXISTS add_friend_connection;
+
 DROP TABLE IF EXISTS friends;
-
-DROP FUNCTION IF EXISTS update_friends_modified_at_column;
-
-DROP TRIGGER IF EXISTS update_friends_modified_at_column_trigger;
