@@ -25,6 +25,13 @@ type User struct {
 	ModifiedAt *time.Time `json:"modifiedAt,omitempty" db:"modified_at"`
 }
 
+type LoggedInUser struct {
+	Name     string `json:"name" db:"name"`
+	Email    string `json:"email,omitempty" db:"email"`
+	Phone    string `json:"phone,omitempty" db:"phone"`
+	ImageURL string `json:"imageUrl,omitempty" db:"image_url"`
+}
+
 type UserRegisterRequest struct {
 	User
 	Password        string `json:"password"`
@@ -39,7 +46,7 @@ type UserLoginRequest struct {
 }
 
 type UserWithToken struct {
-	*User
+	*LoggedInUser
 	AccessToken string     `json:"accessToken"`
 	CreatedAt   *time.Time `json:"-" db:"created_at"`
 	ModifiedAt  *time.Time `json:"-" db:"modified_at"`
@@ -127,14 +134,14 @@ func comparePassword(hashedPassword string, password string) bool {
 
 // User database operations
 func getUserByPhone(db *sqlx.DB, phoneNumber string) (*User, error) {
-	query := `SELECT * FROM users WHERE phone = $1`
+	query := `SELECT id, name, password, email, phone, image_url  FROM users WHERE phone = $1`
 	data := &User{}
 	err := db.Get(data, query, phoneNumber)
 	return data, err
 }
 
 func getUserByEmail(db *sqlx.DB, email string) (*User, error) {
-	query := `SELECT * FROM users WHERE email = $1`
+	query := `SELECT id, name, password, email, phone, image_url  FROM users WHERE email = $1`
 	data := &User{}
 	err := db.Get(data, query, email)
 	return data, err
@@ -255,7 +262,12 @@ func UserRegistrationHandler(w http.ResponseWriter, r *http.Request, db *sqlx.DB
 	}
 
 	data := &UserWithToken{
-		User:        user,
+		LoggedInUser: &LoggedInUser{
+			Name:     user.Name,
+			Email:    user.Email,
+			Phone:    user.Phone,
+			ImageURL: user.ImageURL,
+		},
 		AccessToken: token,
 	}
 
@@ -310,7 +322,12 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request, db *sqlx.DB) {
 	}
 
 	data := &UserWithToken{
-		User:        user,
+		LoggedInUser: &LoggedInUser{
+			Name:     user.Name,
+			Email:    user.Email,
+			Phone:    user.Phone,
+			ImageURL: user.ImageURL,
+		},
 		AccessToken: token,
 	}
 
