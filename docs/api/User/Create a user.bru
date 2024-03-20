@@ -12,14 +12,14 @@ post {
 
 body:json {
   {
-    "credentialType": "phone | email", // not null, should in enum
-    "credentialValue": "+621.... | n@n.co", // not null
+    "credentialType": "phone", // not null, should in enum
+    "credentialValue": "+62312323", // not null
     // 👆 if credentialType == email, value should be in email format, 
     // otherwise, phone number should start with "international calling code" (including the "+" prefix)
     // with minLength=7 and maxLength=13 (including the "international calling code" with the "+" and only
     // applicable with credentialType == phone)
     "name": "namadepan namabelakang", // not null, minLength 5, maxLength 50, name can be duplicate with others
-    "password": "" // not null, minLength 5, maxLength 15
+    "password": "awesomepassword" // not null, minLength 5, maxLength 15
   }
 }
 

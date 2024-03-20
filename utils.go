@@ -14,15 +14,11 @@ type BaseResponse struct {
 
 func ParseDBErrorMessage(err error) (error, int) {
 	errorMessage := err.Error()
-	if errorMessage == "pq: duplicate key value violates unique constraint \"users_email_key\"" {
-		return fmt.Errorf("Email already registered"), http.StatusConflict
+	if errorMessage == "pq: duplicate key value violates unique constraint \"users_email_phone_key\"" {
+		return fmt.Errorf("Email/Phone already registered"), http.StatusConflict
 	}
-	if errorMessage == "pq: duplicate key value violates unique constraint \"users_phone_key\"" {
-		return fmt.Errorf("Phone already registered"), http.StatusConflict
-	}
-
 	if errorMessage == "sql: no rows in result set" {
 		return fmt.Errorf("Not found"), http.StatusNotFound
 	}
-	return fmt.Errorf("Error creating user, please try again."), http.StatusInternalServerError
+	return fmt.Errorf("Something wrong with our server, please try again."), http.StatusInternalServerError
 }

@@ -33,13 +33,16 @@ type UserRegisterRequest struct {
 }
 
 type UserLoginRequest struct {
-	UserName string `json:"username"`
-	Password string `json:"password"`
+	Password        string `json:"password"`
+	CredentialType  string `json:"credentialType"`
+	CredentialValue string `json:"credentialValue"`
 }
 
 type UserWithToken struct {
 	*User
-	AccessToken string `json:"accessToken"`
+	AccessToken string     `json:"accessToken"`
+	CreatedAt   *time.Time `json:"-" db:"created_at"`
+	ModifiedAt  *time.Time `json:"-" db:"modified_at"`
 }
 
 type UserRegisterResponse struct {
@@ -123,11 +126,25 @@ func comparePassword(hashedPassword string, password string) bool {
 }
 
 // User database operations
-func getUserByUserName(db *sqlx.DB, username string) (*User, error) {
-	query := `SELECT * FROM users WHERE username = $1`
+func getUserByPhone(db *sqlx.DB, phoneNumber string) (*User, error) {
+	query := `SELECT * FROM users WHERE phone = $1`
 	data := &User{}
-	err := db.Get(data, query, username)
+	err := db.Get(data, query, phoneNumber)
 	return data, err
+}
+
+func getUserByEmail(db *sqlx.DB, email string) (*User, error) {
+	query := `SELECT * FROM users WHERE email = $1`
+	data := &User{}
+	err := db.Get(data, query, email)
+	return data, err
+}
+
+func getUser(db *sqlx.DB, payload *UserLoginRequest) (*User, error) {
+	if payload.CredentialType == "phone" {
+		return getUserByPhone(db, payload.CredentialValue)
+	}
+	return getUserByEmail(db, payload.CredentialValue)
 }
 
 func generateUserWithPhone(payload *UserRegisterRequest) (*User, error) {
@@ -254,12 +271,26 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request, db *sqlx.DB) {
 		return
 	}
 
-	if !isValidPassword(payload.Password) {
-		render.Render(w, r, ErrInvalidRequest(fmt.Errorf("Invalid username or password")))
+	if !isValidCredentialType(payload.CredentialType) {
+		render.Render(w, r, ErrInvalidRequest(fmt.Errorf("Invalid credential type")))
 		return
 	}
 
-	user, err := getUserByUserName(db, payload.UserName)
+	if payload.CredentialType == "email" && !isValidEmail(payload.CredentialValue) {
+		render.Render(w, r, ErrInvalidRequest(fmt.Errorf("Invalid email/phone number or password")))
+		return
+	}
+
+	if payload.CredentialType == "phone" && !isValidPhoneNumber(payload.CredentialValue) {
+		render.Render(w, r, ErrInvalidRequest(fmt.Errorf("Invalid email/phone number or password")))
+		return
+	}
+	if !isValidPassword(payload.Password) {
+		render.Render(w, r, ErrInvalidRequest(fmt.Errorf("Invalid email/phone number or password")))
+		return
+	}
+
+	user, err := getUser(db, payload)
 
 	if err != nil {
 		render.Render(w, r, ErrServer(ParseDBErrorMessage(err)))
